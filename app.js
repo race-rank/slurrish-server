@@ -1,17 +1,25 @@
-const http = require("http");
+const express = require("express");
 const { Server } = require("socket.io");
+const http = require("http");
 
-const lobbies = {};
+// Create an Express application
+const app = express();
+const PORT = process.env.PORT || 10000;
 
-const httpServer = http.createServer();
+// Create an HTTP server with the Express app
+const httpServer = http.createServer(app);
 
+// Initialize Socket.IO with CORS settings
 const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin: "*:*", // Allow all origins for development. Restrict this in production.
     methods: ["GET", "POST"],
   },
 });
 
+const lobbies = {};
+
+// Socket.IO logic
 io.on("connection", (socket) => {
   console.log("Player connected:", socket.id);
 
@@ -65,6 +73,7 @@ function leaveLobby(socket) {
   }
 }
 
-httpServer.listen(10000, "0.0.0.0", () => {
-  console.log(`Server running on port ${10000}`);
+// Start the server
+httpServer.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
