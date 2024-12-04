@@ -65,6 +65,6 @@ function leaveLobby(socket) {
   }
 }
 
-httpServer.listen(process.env.PORT || 3000, "0.0.0.0", () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
+httpServer.listen(10000, "0.0.0.0", () => {
+  console.log(`Server running on port ${10000}`);
 });
