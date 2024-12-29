@@ -84,29 +84,28 @@ function createLobby(ws, playerName, words) {
   console.log(`Lobby ${lobbyId} created by player ${playerName}`);
 }
 
-function joinLobby(ws, lobbyId, playerName, words) {
-  const lobby = lobbies[lobbyId];
-  if (!lobby) {
-    ws.send(JSON.stringify({ action: 'error', message: 'Lobby does not exist' }));
-    return;
+function joinLobby(ws, lobbyId, playerName) {
+  if (!lobbies[lobbyId]) {
+    lobbies[lobbyId] = {
+      players: [],
+    };
   }
 
+  const lobby = lobbies[lobbyId];
+  if (!lobby.players.find((player) => player.name === playerName)) {
+    lobby.players.push({ name: playerName, id: ws._socket.remoteAddress });
+  }
+
+  ws.playerId = playerName;
   ws.lobbyId = lobbyId;
-  ws.playerId = generateId();
 
-  lobby.players[ws.playerId] = {
-    name: playerName,
-    words,
-    usedWords: []
-  };
-  lobby.playerOrder.push(ws.playerId);
+  console.log(`Player ${playerName} joined lobby ${lobbyId}.`);
 
+  const updatedPlayerList = lobby.players.map((player) => player.name);
   broadcastToLobby(lobbyId, {
     action: 'playerJoined',
-    playerId: ws.playerId,
-    playerName,
+    players: updatedPlayerList,
   });
-  console.log(`Player ${playerName} joined lobby ${lobbyId}`);
 }
 
 function leaveLobby(ws) {
