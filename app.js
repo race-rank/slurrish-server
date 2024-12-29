@@ -104,7 +104,8 @@ function joinLobby(ws, lobbyId, playerName) {
   const updatedPlayerList = lobby.players.map((player) => player.name);
   broadcastToLobby(lobbyId, {
     action: 'playerJoined',
-    players: updatedPlayerList,
+    playerId: ws.playerId,
+    playersName: updatedPlayerList,
   });
 }
 
